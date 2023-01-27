@@ -1,12 +1,13 @@
 @import 'mixins.scss';
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap');
 
+$content_width: 640px;
+
 :root {
     --color-white: #ffffff;
     --color-black: #000000;
     --color-blue: #4770FF;
-  }
-  
+}
 
 * {
     box-sizing: border-box;
@@ -32,7 +33,7 @@ body {
 
 .container {
     display: flex;
-    max-width: 640px;
+    max-width: $content_width;
     width: 100%;
     margin: 0 auto;
     position: relative;
@@ -47,6 +48,17 @@ body {
 
         &_align-items_center {
             align-items: center;
+        }
+    }
+
+    @media all and (max-width: $content_width) {
+        flex-direction: column;
+        max-width: 100%;
+        padding: 0 20px;
+        gap: 20px;
+
+        .col {
+            width: 100%;
         }
     }
 }
@@ -140,10 +152,25 @@ body {
             border-color: var(--color-blue);
         }
     }
+
+    @media all and (max-width: $content_width) {
+        gap: 0;
+
+        &__input {
+            max-width: 100%;
+            width: 45%;
+        }
+    }
 }
 
 .customization {
     margin: 60px 0 0;
+
+    @media all and (max-width: $content_width) {
+        margin: 40px 0 0;
+
+        &__material-select, &__position {width: 100%;}
+    }
 }
 
 // Select Element styles
@@ -161,6 +188,11 @@ body {
             outline: none;
             background: transparent;
             border-color: var(--color-blue);
+        }
+
+        @media all and (max-width: $content_width) {
+            max-width: 100%;
+            width: 100%!important;
         }
     }
     
