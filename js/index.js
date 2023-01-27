@@ -7,8 +7,18 @@ jQuery(document).ready($ => {
         max: {x: 0, y: 0},
         selector: '.position_target',
         
-        update_sizes() {
+        coords_reset() {
+            const arr = [
+                {coord: 'x', value: 0, css_attr: 'left'},
+                {coord: 'y', value: 0, css_attr: 'top'}
+            ];
 
+            for (let $i = 0; $i < arr.length; $i++) {
+                let item = arr[$i];
+                this.coords[item.coord] = item.value;
+                $( circle.selector ).css(item.css_attr, 'unset');
+                $( this.selector ).find(`.position__input[name=position_${item.coord}]`).val('');
+            }
         },
         set(coord, value) {
             let set_value,
@@ -62,7 +72,8 @@ jQuery(document).ready($ => {
                 target.val(val);
                 this.coords[type[1]] = val;
             });
-            //
+            // Window Resize
+            $( window ).resize(() => this.coords_reset());
         },
         init() {
             let image_sizes = image.get_sizes();
