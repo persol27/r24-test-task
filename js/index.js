@@ -139,6 +139,7 @@ jQuery(document).ready($ => {
                 //class_list = $i == 0 ? `${class_list} selected` : class_list;
                 $( this.selector ).append(`<option class="${class_list}" value="${this.options[$i].src}">${this.options[$i].name}</option>`)
             }
+
             $( this.selector ).iconselectmenu({
                 position: { my : "center bottom", at: "center top" },
                 change: (event, data) => {
