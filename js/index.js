@@ -113,7 +113,6 @@ jQuery(document).ready($ => {
         customSelect() {
             $.widget( "custom.iconselectmenu", $.ui.selectmenu, {
                 _renderItem: (ul, item) => {
-                    console.log(item);
                     let li = $( "<li>" ),
                         wrapper = $( "<div>" ),
                         text = $( "<span>", { text: item.label, "class": "ui-text" } ).prependTo(wrapper)
@@ -142,10 +141,23 @@ jQuery(document).ready($ => {
 
             $( this.selector ).iconselectmenu({
                 position: { my : "center bottom", at: "center top" },
+                create: (event, data) => {
+                    $( '.ui-selectmenu-menu' ).css('opacity', 0);
+                },
                 change: (event, data) => {
                     $( image.selector ).hide( 'fade', {}, 200 );
                     setTimeout(() => image.set_src(data.item.value), 250)
                     $( image.selector ).show( 'fade', {}, 400 );
+                },
+                close: (event, data) => {
+                    $('.ui-selectmenu-menu')
+                        .addClass('ui-selectmenu-open')
+                        .css('pointer-events', 'none')
+                        .animate({opacity: 0}, 275);
+                    setTimeout(() => $('.ui-selectmenu-menu').removeClass('ui-selectmenu-open').css('pointer-events', 'all'), 225);
+                },
+                open: (event, data) => {
+                    $('.ui-selectmenu-menu').animate({opacity: 1}, 375);
                 }
             }).iconselectmenu( "menuWidget").addClass( "ui-menu-icons avatar" );
         }
