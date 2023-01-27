@@ -73,7 +73,9 @@ jQuery(document).ready($ => {
                 this.coords[type[1]] = val;
             });
             // Window Resize
-            $( window ).resize(() => this.coords_reset());
+            $( window ).resize(() => {
+                //this.coords_reset();
+            });
         },
         init() {
             let image_sizes = image.get_sizes();
