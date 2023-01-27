@@ -1,0 +1,211 @@
+@import 'mixins.scss';
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap');
+
+:root {
+    --color-white: #ffffff;
+    --color-black: #000000;
+    --color-blue: #4770FF;
+  }
+  
+
+* {
+    box-sizing: border-box;
+    padding: 0;
+    margin: 0;
+}
+
+html,
+body {
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+    background-color: var(--color-white);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    @media all and (min-width: 768px) {
+        overflow: hidden;
+    }
+}
+
+.container {
+    display: flex;
+    max-width: 640px;
+    width: 100%;
+    margin: 0 auto;
+    position: relative;
+    justify-content: space-between;
+
+    .col {
+        display: inline-flex;
+        max-width: 100%;
+        width: auto;
+
+        &-6 {width: 50%;}
+
+        &_align-items_center {
+            align-items: center;
+        }
+    }
+}
+
+.circle {
+    width: 48px;
+    height: 48px;
+    border: 6px solid var(--color-white);
+    border-radius: 100%;
+}
+
+.content {
+
+    &__block {
+        max-width: 100%;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow: hidden;
+    }
+    &__image {
+        z-index: 1;
+    }
+    &__circle {
+        z-index: 2;
+        position: absolute;
+        cursor: pointer;
+
+        /*&::after, &::before {
+            content: '';
+            height: 1px;
+            width: 100vh;
+            position: absolute;
+            border-bottom: 2px dashed #FFFFFF;
+        }
+        &::after {
+
+        }
+        &::before {
+
+        }*/
+    }
+}
+.image-block {
+    position: relative;
+    max-width: 100%;
+    width: 100%;
+    height: 47.5vh;
+
+    * {border-radius: 24px;}
+    &__img {
+        max-width: 100%;
+        width: 100%;
+        height: inherit;
+        object-fit: cover;
+        pointer-events: none;
+        z-index: 1;
+    }
+    &__overlay {
+        position: absolute;
+        background: linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2));
+        max-width: 100%;
+        width: 100%;
+        height: inherit;
+        z-index: 2;
+    }
+}
+
+.position {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+
+    &__input {
+        max-width: 140px;
+        width: 100%;
+        border: 1px solid #d9d9d9;
+        border-radius: 12px;
+        padding: 17px 20px;
+        font-family: 'Inter', sans-serif;
+        @include setFont(20px, 500, 1.2em);
+        color: #A1A1AA;
+
+        &::placeholder {color: #A1A1AA}
+        &:hover, &:focus {
+            outline: none;
+            background: transparent;
+            border-color: var(--color-blue);
+        }
+    }
+}
+
+.customization {
+    margin: 60px 0 0;
+}
+
+// Select Element styles
+.ui-selectmenu {
+
+    &-button {
+        max-width: 250px;
+        width: 100%;
+        background-color: transparent;
+        border: 1px solid #D9D9D9;
+        border-radius: 12px;
+        padding: 17px 20px;
+
+        &:hover, &:focus {
+            outline: none;
+            background: transparent;
+            border-color: var(--color-blue);
+        }
+    }
+    
+    &-button &-icon {
+        background: url(../images/selectmenu-icon.svg) no-repeat center center;
+        background-size: cover;
+        position: absolute;
+        right: 20px;
+        top: 50%;
+        transform: translate(0, -50%);
+        width: 12px;
+        height: 6px;
+    }
+    &-button:focus &-icon, &-button:hover &-icon {
+        background-image: url(../images/selectmenu-icon.svg);
+    }
+    &-text {
+        font-family: 'Inter', sans-serif;
+        @include setFont(20px, 500, 1.2em);
+        color: var(--color-black);
+    }
+}
+
+// Select menu element styles
+.ui-selectmenu-menu {
+
+    .ui-menu {
+        border-radius: 24px;
+        padding: 17px 0;
+        margin-top: 4px;
+        border: 1px solid #D9D9D9;
+
+        &-item-wrapper {
+            @include setFont(18px, 500, 1.2em);
+            background: transparent;
+            color: var(--color-black);
+            border: none;
+            border-bottom: 1px solid transparent;
+            transition: .275s;
+            padding: 4px 20px;
+            
+            &.ui-state-active {
+                margin: 0;
+                border-bottom: 1px solid var(--color-blue);
+            }
+        }
+    }
+}
