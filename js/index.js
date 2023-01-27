@@ -13,20 +13,21 @@ jQuery(document).ready($ => {
         set(coord, value) {
             let set_value,
                 image_sizes = image.get_sizes(), // returned obj(w: width, h: height)
-                width = image_sizes.w,
-                height = image_sizes.h;
+                width = Math.ceil(image_sizes.w/2), // 50% from width (h/2)
+                height = Math.ceil(image_sizes.h/2); // 50% from height (w/2)
 
             if (coord == 'x') {
-                set_value = value - width/2;
+                set_value = value - width;
             } else if (coord == 'y') {
-                set_value = height/2 - value;
+                set_value = height - value;
             }
+            set_value = Math.ceil(set_value);
 
             this.coords[coord] = set_value;
-
             $( this.selector ).find(`.position__input[name=position_${coord}]`).val(set_value); // upd inputs
         },
         events() {
+            // Input Value Changed
             /*$( this.selector ).on('input propertychange', '.position__input', e => {
                 let target = $(e.target),
                     type = target.attr('name').split('_'), // [position, x], [position, y]
@@ -56,11 +57,12 @@ jQuery(document).ready($ => {
                 target.val(val);
                 this.coords[type[1]] = val;
             });*/
+            //
         },
         init() {
             let image_sizes = image.get_sizes();
-            this.min = {x: -(image_sizes.w/2 - circle.width/2), y: -(image_sizes.h/2 - circle.height/2)};
-            this.max = {x: image_sizes.w/2 - circle.width/2, y: image_sizes.h/2 - circle.height/2};
+            this.min = {x: -Math.ceil(image_sizes.w/2 - circle.width/2), y: -Math.ceil(image_sizes.h/2 - circle.height/2)};
+            this.max = {x: Math.ceil(image_sizes.w/2 - circle.width/2), y: Math.ceil(image_sizes.h/2 - circle.height/2)};
 
             $( this.selector ).find('.position__input[name=position_x]').attr('max', this.max['x']).attr('min', this.min['x']); //.val(this.coords.x);
             $( this.selector ).find('.position__input[name=position_y]').attr('max', this.max['y']).attr('min', this.min['y']); //.val(this.coords.y);
@@ -68,18 +70,24 @@ jQuery(document).ready($ => {
             this.events(); // events init
         }
     }, circle = {
-        width: 48, //px
-        height: 48, //px
+        width: 42, //px
+        height: 42, //px
         position: position.coords,
         selector: '.circle_target',
 
+        set_sizes() {
+            let selector = document.querySelector( this.selector );
+            this.width = selector.offsetWidth;
+            this.height = selector.offsetHeight;
+        },
         init() {
+            this.set_sizes(); // init width&height
+
             $( this.selector ).draggable({
                 containment: "parent",
                 stop: (event, ui) => {
-                    console.log(ui.position);
-                    position.set('x', ui.position.left + this.height/2);
-                    position.set('y', ui.position.top + this.width/2);
+                    position.set('x', Math.ceil(ui.position.left + this.width/2));
+                    position.set('y', Math.ceil(ui.position.top + this.height/2));
                 }
             });
         }
