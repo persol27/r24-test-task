@@ -21,33 +21,22 @@ jQuery(document).ready($ => {
             }
         },
         set(coord, value) {
-            let set_value,
-                image_sizes = image.get_sizes(), // returned obj(w: width, h: height)
-                width = Math.ceil(image_sizes.w/2), // 50% from width (h/2)
-                height = Math.ceil(image_sizes.h/2); // 50% from height (w/2)
+            let value_new = value;
 
-            if (coord == 'x') {
-                set_value = value - width;
-            } else if (coord == 'y') {
-                set_value = height - value;
+            if (coord == 'y') {
+                // image.get_sizes() returned obj(w: width, h: height)
+                value_new = image.get_sizes().h - value - circle.height;
             }
-            set_value = Math.ceil(set_value);
 
-            this.coords[coord] = set_value;
-            $( this.selector ).find(`.position__input[name=position_${coord}]`).val(set_value); // upd inputs
+            this.coords[coord] = Math.round(value_new);
+            $( this.selector ).find(`.position__input[name=position_${coord}]`).val(this.coords[coord]); // upd inputs
         },
         events() {
             // Input Value Changed
             $( this.selector ).on('input propertychange', '.position__input', e => {
                 let target = $(e.target),
-                    type = target.attr('name').split('_'), // [position, x], [position, y]
-                    val = target.val(),
-                    image_sizes = image.get_sizes(), // returned obj(w: width, h: height)
-                    width = Math.ceil(image_sizes.w/2), // 50% from width (h/2)
-                    height = Math.ceil(image_sizes.h/2); // 50% from height (w/2)
-
-                console.log(this.max, this.min);
-                console.log(circle.width/2);
+                    type = target.attr('name').split('_'), // array: [position, x], [position, y]
+                    val = target.val();
 
                 if (type[1] == 'x') {
                     if (val > this.max['x']) {
@@ -56,7 +45,7 @@ jQuery(document).ready($ => {
                         val = this.min['x'];
                     }
 
-                    let result = width + Math.ceil(val - circle.width/2);
+                    let result = Math.round(val);
                     $( circle.selector ).css('left', result);
                 } else if (type[1] == 'y') {
                     if (val > this.max['y']) {
@@ -65,7 +54,7 @@ jQuery(document).ready($ => {
                         val = this.min['y'];
                     }
 
-                    let result = Math.ceil(height - circle.height/2) - val;
+                    let result = Math.ceil(image.get_sizes().h - val - circle.height);
                     $( circle.selector ).css('top', result);
                 }
 
@@ -78,22 +67,21 @@ jQuery(document).ready($ => {
             });
         },
         init() {
-            let image_sizes = image.get_sizes();
-            console.log(circle.width/2);
-            this.min = {x: -Math.ceil(image_sizes.w/2 - circle.width/2), y: -Math.ceil(image_sizes.h/2 - circle.height/2)};
-            this.max = {x: Math.ceil(image_sizes.w/2 - circle.width/2), y: Math.ceil(image_sizes.h/2 - circle.height/2)};
+            setTimeout(()=> {
+                this.max = {x: Math.ceil(image.get_sizes().w - circle.width), y: Math.ceil(image.get_sizes().h - circle.height)};
 
-            $( this.selector ).find('.position__input[name=position_x]').attr('max', this.max['x']).attr('min', this.min['x']); //.val(this.coords.x);
-            $( this.selector ).find('.position__input[name=position_y]').attr('max', this.max['y']).attr('min', this.min['y']); //.val(this.coords.y);
+                $( this.selector ).find('.position__input[name=position_x]').attr('max', this.max['x']).attr('min', this.min['x']); //.val(this.coords.x);
+                $( this.selector ).find('.position__input[name=position_y]').attr('max', this.max['y']).attr('min', this.min['y']); //.val(this.coords.y);
 
-            this.events(); // events init
+                this.events(); // events init
+            },  50)
         }
     }, circle = {
         width: 48, //px
         height: 48, //px
         position: position.coords,
         selector: '.circle_target',
-
+        
         set_sizes() {
             let selector = document.querySelector( this.selector );
             this.width = selector.offsetWidth;
@@ -104,9 +92,9 @@ jQuery(document).ready($ => {
 
             $( this.selector ).draggable({
                 containment: "parent",
-                stop: (event, ui) => {
-                    position.set('x', Math.ceil(ui.position.left + this.width/2));
-                    position.set('y', Math.ceil(ui.position.top + this.height/2));
+                drag: (event, ui) => {
+                    position.set('x', ui.position.left);
+                    position.set('y', ui.position.top);
                 }
             });
         }
@@ -122,15 +110,43 @@ jQuery(document).ready($ => {
         position: position.coords,
         selector: '.material-select',
 
+        customSelect() {
+            $.widget( "custom.iconselectmenu", $.ui.selectmenu, {
+                _renderItem: (ul, item) => {
+                    console.log(item);
+                    let li = $( "<li>" ),
+                        wrapper = $( "<div>" ),
+                        text = $( "<span>", { text: item.label, "class": "ui-text" } ).prependTo(wrapper)
+
+                    if ( item.disabled ) {
+                        li.addClass( "ui-state-disabled" );
+                    }
+
+                    $( "<span>", {
+                        style: `background-image: url(${item.value})`,
+                        "class": "ui-icon image-preview"
+                    }).prependTo( wrapper );
+
+                    return li.append( wrapper ).appendTo( ul );
+                }
+              });
+        },
         init() {
+            this.customSelect();
+            
             for (let $i = 0; $i < this.options.length; $i++) {
                 let class_list = 'material-select__item material-option';
                 //class_list = $i == 0 ? `${class_list} selected` : class_list;
                 $( this.selector ).append(`<option class="${class_list}" value="${this.options[$i].src}">${this.options[$i].name}</option>`)
             }
-            $( this.selector ).selectmenu({
-                change: (event, data) => image.set_src(data.item.value)
-            });
+            $( this.selector ).iconselectmenu({
+                position: { my : "center bottom", at: "center top" },
+                change: (event, data) => {
+                    $( image.selector ).hide( 'fade', {}, 200 );
+                    setTimeout(() => image.set_src(data.item.value), 250)
+                    $( image.selector ).show( 'fade', {}, 400 );
+                }
+            }).iconselectmenu( "menuWidget").addClass( "ui-menu-icons avatar" );
         }
     }, image = {
         src: customization.default_src,
@@ -141,9 +157,9 @@ jQuery(document).ready($ => {
             $( this.selector ).attr('src', src);
         },
         get_sizes() {
-            let selector = $( this.selector ),
-                width = selector.width(),
-                height = selector.height();
+            let selector = document.querySelector( this.selector ),
+                width = selector.offsetWidth,
+                height = selector.offsetHeight;
 
             return {w: width, h: height};
         },
@@ -153,7 +169,7 @@ jQuery(document).ready($ => {
     };
 
     // Script Init
-    let objects_arr = [position, circle, customization, image];
+    let objects_arr = [image, position, circle, customization];
     const init = objects => objects.forEach(el => el.init());
 
     init(objects_arr);

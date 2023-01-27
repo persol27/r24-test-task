@@ -1,7 +1,7 @@
 @import 'mixins.scss';
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700&display=swap');
 
-$content_width: 640px;
+$content_width: 720px;
 
 :root {
     --color-white: #ffffff;
@@ -17,6 +17,8 @@ $content_width: 640px;
 
 html,
 body {
+    max-width: 100%;
+    width: 100%;
     overflow-x: hidden;
     margin: 0;
     padding: 0;
@@ -24,36 +26,47 @@ body {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    align-items: center;
+    justify-content: stretch;
 
     @media all and (min-width: 768px) {
         overflow: hidden;
     }
 }
 
-.container {
-    display: flex;
+.main {
+    margin: 30px 0;
+    background: #F2F2F5;
+    border-radius: 24px;
+    padding: 60px 40px;
+}
+
+.main, .container {
     max-width: $content_width;
     width: 100%;
+
+    @media all and (max-width: $content_width) {
+        max-width: 100%;
+    }
+}
+
+.container {
+    display: flex;
     margin: 0 auto;
     position: relative;
     justify-content: space-between;
 
     .col {
         display: inline-flex;
+        flex-direction: column;
         max-width: 100%;
         width: auto;
 
         &-6 {width: 50%;}
-
-        &_align-items_center {
-            align-items: center;
-        }
     }
 
     @media all and (max-width: $content_width) {
         flex-direction: column;
-        max-width: 100%;
         padding: 0 20px;
         gap: 20px;
 
@@ -76,10 +89,12 @@ body {
         max-width: 100%;
         width: 100%;
         display: flex;
-        align-items: center;
-        justify-content: center;
+        align-items: flex-end;
+        justify-content: flex-start;
         position: relative;
         overflow: hidden;
+        box-shadow: 0 14px 34px rgb(0 0 0 / 15%);
+        border-radius: 24px;
     }
     &__image {
         z-index: 1;
@@ -138,18 +153,18 @@ body {
     &__input {
         max-width: 140px;
         width: 100%;
-        border: 1px solid #d9d9d9;
+        border: 1px solid transparent;
         border-radius: 12px;
         padding: 17px 20px;
         font-family: 'Inter', sans-serif;
         @include setFont(20px, 500, 1.2em);
-        color: #A1A1AA;
+        color: var(--color-black);
+        transition: .275s;
 
         &::placeholder {color: #A1A1AA}
         &:hover, &:focus {
             outline: none;
-            background: transparent;
-            border-color: var(--color-blue);
+            border-color: #D9D9D9;
         }
     }
 
@@ -166,6 +181,13 @@ body {
 .customization {
     margin: 60px 0 0;
 
+    &__title {
+        font-family: 'Inter', sans-serif;
+        @include setFont(20px, 700, 1.2em);
+        color: #4C4C4C;
+        margin: 0 0 18px 10px;
+    }
+
     @media all and (max-width: $content_width) {
         margin: 40px 0 0;
 
@@ -179,15 +201,16 @@ body {
     &-button {
         max-width: 250px;
         width: 100%;
-        background-color: transparent;
-        border: 1px solid #D9D9D9;
+        background-color: #fff;
+        border: 1px solid transparent;
         border-radius: 12px;
         padding: 17px 20px;
+        transition: .275s;
 
         &:hover, &:focus {
             outline: none;
-            background: transparent;
-            border-color: var(--color-blue);
+            background: #fff;
+            border-color: #D9D9D9;
         }
 
         @media all and (max-width: $content_width) {
@@ -220,23 +243,43 @@ body {
 .ui-selectmenu-menu {
 
     .ui-menu {
-        border-radius: 24px;
-        padding: 17px 0;
-        margin-top: 4px;
+        border-radius: 12px;
+        padding: 14px 16px;
+        background: var(--color-white);
         border: 1px solid #D9D9D9;
 
+        .ui-icon.image-preview {
+            $size: 32px;
+            width: $size;
+            height: $size;
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-size: cover;
+            position: relative;
+            border-radius: 6px;
+        }
+        .ui-text {
+            display: block;
+            position: relative;
+            margin-left: 12px;
+        }
+
+        .ui-menu-item + .ui-menu-item {margin-top: 8px;}
         &-item-wrapper {
-            @include setFont(18px, 500, 1.2em);
+            font-family: 'Inter', sans-serif;
+            @include setFont(20px, 500, 1.2em);
             background: transparent;
+            width: auto;
             color: var(--color-black);
             border: none;
-            border-bottom: 1px solid transparent;
             transition: .275s;
-            padding: 4px 20px;
+            padding: 0;
+            display: inline-flex;
+            align-items: center;
             
             &.ui-state-active {
                 margin: 0;
-                border-bottom: 1px solid var(--color-blue);
+                font-weight: 600;
             }
         }
     }
