@@ -57,11 +57,11 @@ jQuery(document).ready($ => {
         set_src(src, animate) { // animate - bool
             if (animate) {
                 $( this.selector ).animate({opacity: 0}, 200, () => {
-                    $( this.selector ).attr('src', src);
+                    $( this.selector ).css('background-image', `url(${src})`);
                     $( this.selector ).animate({opacity: 1}, 400);
                 });
             } else {
-                $( this.selector ).attr('src', src)
+                $( this.selector ).css('background-image', `url(${src})`);
             }
         },
         get_sizes() {

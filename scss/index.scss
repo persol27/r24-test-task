@@ -151,7 +151,9 @@ body {
         max-width: 100%;
         width: 100%;
         height: inherit;
-        object-fit: cover;
+        background-repeat: no-repeat;
+        background-position: center center;
+        background-size: cover;
         pointer-events: none;
         z-index: 1;
     }
