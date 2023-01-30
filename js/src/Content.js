@@ -9,35 +9,42 @@ const circle = {
         this.width = selector.offsetWidth;
         this.height = selector.offsetHeight;
     },
+    resize() {
+        this.draggable.options.limit.x = [0, image.get_sizes().w - this.width];
+        this.draggable.options.limit.y = [0, image.get_sizes().h - this.height];
+    },
     init() {
         this.position = position.coords;
         this.set_sizes(); // init width&height
-
-        setTimeout(() => {
-            let container = document.querySelector( '.content__block' ),
-            container_rect = container.getBoundingClientRect(),
-            element = document.querySelector( this.selector ),
+        
+        let element = document.querySelector( this.selector ),
             options = {
                 limit: {
-                    x: [0, container_rect.width - this.width],
-                    y: [0, container_rect.height - this.height]
+                    x: [0, image.get_sizes().w - this.width],
+                    y: [0, image.get_sizes().h - this.height]
                 },
                 onDrag: (element, x, y) => {
                     position.set('x', x);
                     position.set('y', y);
                 }
             };
-            
-            this.draggable = new Draggable (element, options);
-        }, 250)
+
+        this.draggable = new Draggable (element, options);
+        console.log(this.draggable);
     }
 }, image = {
     src: '',
     position: '',
     selector: '.slide-image',
 
-    set_src(src) {
-        $( this.selector ).attr('src', src);
+    set_src(src, animate) { // animate - bool
+        if (animate) {
+            $( this.selector ).animate({opacity: 0}, 225);
+            setTimeout(() => $( this.selector ).attr('src', src), 275);
+            $( image.selector ).animate({opacity: 1}, 400);
+        } else {
+            $( this.selector ).attr('src', src)
+        }
     },
     get_sizes() {
         let selector = document.querySelector( this.selector ),
@@ -50,6 +57,6 @@ const circle = {
         this.src = materials.default_src;
         this.position = position.coords;
 
-        this.set_src(this.src);
+        this.set_src(this.src, false);
     }
 };

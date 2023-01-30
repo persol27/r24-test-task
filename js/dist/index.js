@@ -17,18 +17,19 @@ jQuery(document).ready($ => {
             this.width = selector.offsetWidth;
             this.height = selector.offsetHeight;
         },
+        resize() {
+            this.draggable.options.limit.x = [0, image.get_sizes().w - this.width];
+            this.draggable.options.limit.y = [0, image.get_sizes().h - this.height];
+        },
         init() {
             this.position = position.coords;
             this.set_sizes(); // init width&height
-    
-            setTimeout(() => {
-                let container = document.querySelector( '.content__block' ),
-                container_rect = container.getBoundingClientRect(),
-                element = document.querySelector( this.selector ),
+            
+            let element = document.querySelector( this.selector ),
                 options = {
                     limit: {
-                        x: [0, container_rect.width - this.width],
-                        y: [0, container_rect.height - this.height]
+                        x: [0, image.get_sizes().w - this.width],
+                        y: [0, image.get_sizes().h - this.height]
                     },
                     onDrag: (element, x, y) => {
                         position.set('x', x);
@@ -36,17 +37,22 @@ jQuery(document).ready($ => {
                     }
                 };
     
-                console.log(container_rect.x - this.width, container_rect, container_rect.x, this.width);
-                this.draggable = new Draggable (element, options);
-            }, 250)
+            this.draggable = new Draggable (element, options);
+            console.log(this.draggable);
         }
     }, image = {
         src: '',
         position: '',
         selector: '.slide-image',
     
-        set_src(src) {
-            $( this.selector ).attr('src', src);
+        set_src(src, animate) { // animate - bool
+            if (animate) {
+                $( this.selector ).animate({opacity: 0}, 225);
+                setTimeout(() => $( this.selector ).attr('src', src), 275);
+                $( image.selector ).animate({opacity: 1}, 400);
+            } else {
+                $( this.selector ).attr('src', src)
+            }
         },
         get_sizes() {
             let selector = document.querySelector( this.selector ),
@@ -59,7 +65,7 @@ jQuery(document).ready($ => {
             this.src = materials.default_src;
             this.position = position.coords;
     
-            this.set_src(this.src);
+            this.set_src(this.src, false);
         }
     };
     const position = {
@@ -82,54 +88,73 @@ jQuery(document).ready($ => {
             }
         },
         set(coord, value) {
-            let value_new = value;
+            let val = value;
     
-            if (coord == 'y') {
-                // image.get_sizes() returned obj(w: width, h: height)
-                value_new = image.get_sizes().h - value - circle.height;
+            if (coord == 'x') {
+                if (val > this.max['x']) {
+                    val = this.max['x'];
+                } else if (val < this.min['x']) {
+                    val = this.min['x'];
+                }
+                
+                let result = Math.round(val);
+                //$( circle.selector ).css('left', result);
+            } else if (coord == 'y') {
+                if (val > this.max['y']) {
+                    val = this.max['y'];
+                } else if (val < this.min['y']) {
+                    val = this.min['y'];
+                }
+    
+                let result = Math.ceil(image.get_sizes().h - val - circle.height);
+                //$( circle.selector ).css('top', result);
             }
     
-            this.coords[coord] = Math.round(value_new);
+            val = Math.ceil(val);
+    
+            this.coords[coord] = val;
             $( this.selector ).find(`.position__input[name=position_${coord}]`).val(this.coords[coord]); // upd inputs
         },
         events() {
+            // Input regex
+    
             // Input Value Changed
             $( this.selector ).on('input propertychange change', '.position__input', e => {
                 let target = $(e.target),
                     type = target.attr('name').split('_'), // array: [position, x], [position, y]
                     val = target.val();
     
-                if (type[1] == 'x') {
-                    if (val > this.max['x']) {
-                        val = this.max['x'];
-                    } else if (val < this.min['x']) {
-                        val = this.min['x'];
-                    }
-    
-                    let result = Math.round(val);
-                    $( circle.selector ).css('left', result);
-                } else if (type[1] == 'y') {
-                    if (val > this.max['y']) {
-                        val = this.max['y'];
-                    } else if (val < this.min['y']) {
-                        val = this.min['y'];
-                    }
-    
-                    let result = Math.ceil(image.get_sizes().h - val - circle.height);
-                    $( circle.selector ).css('top', result);
-                }
-    
-                target.val(val);
-                this.coords[type[1]] = val;
+                this.set(type[1], val);
             });
+    
+            $( window ).resize(() => {
+                circle.resize();
+                this.set_max();
+    
+                setTimeout(() => {
+                    let x = $( this.selector ).find('.position__input[name=position_x]'),
+                        y = $( this.selector ).find('.position__input[name=position_y]');
+    
+                    this.set('x', x.val());
+                    this.set('y', y.val());
+                }, 75);
+            });
+        },
+        set_max() {
+            let x = $( this.selector ).find('.position__input[name=position_x]'),
+                y = $( this.selector ).find('.position__input[name=position_y]');
+                
+            this.max = {
+                x: Math.ceil(image.get_sizes().w - circle.width),
+                y: Math.ceil(image.get_sizes().h - circle.height)
+            };
+    
+            x.attr('max', this.max['x']).attr('min', this.min['x']); //.val(this.coords.x);
+            y.attr('max', this.max['y']).attr('min', this.min['y']); //.val(this.coords.y);
         },
         init() {
             setTimeout(()=> {
-                this.max = {x: Math.ceil(image.get_sizes().w - circle.width), y: Math.ceil(image.get_sizes().h - circle.height)};
-    
-                $( this.selector ).find('.position__input[name=position_x]').attr('max', this.max['x']).attr('min', this.min['x']); //.val(this.coords.x);
-                $( this.selector ).find('.position__input[name=position_y]').attr('max', this.max['y']).attr('min', this.min['y']); //.val(this.coords.y);
-    
+                this.set_max(); // min max init
                 this.events(); // events init
             },  50)
         }
@@ -159,11 +184,7 @@ jQuery(document).ready($ => {
         eventsSelect() {
             $( this.selector ).on('select2:open', e => {
                 
-            }).on('select2:select', e => {
-                $( image.selector ).animate({opacity: 0}, 250);
-                setTimeout(() => image.set_src(e.params.data.id), 225)
-                $( image.selector ).animate({opacity: 1}, 400);
-            });
+            }).on('select2:select', e => image.set_src(e.params.data.id, true));
         },
         init() {
             this.default_src = this.options[0].src;
