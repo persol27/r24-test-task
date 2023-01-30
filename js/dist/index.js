@@ -3,6 +3,10 @@
 window.addEventListener('load', () => {
   const el = document.querySelector('.main');
   el.classList.remove("main_no-load");
+  
+  if(/iP(hone|ad)/.test(window.navigator.userAgent)) {
+    document.body.addEventListener('touchstart', () => {}, false);
+  }
 });
 
 jQuery(document).ready($ => {
@@ -33,7 +37,13 @@ jQuery(document).ready($ => {
                     },
                     onDrag: (element, x, y) => {
                         position.set('x', x, 'event');
-                        position.set('y', image.get_sizes().h - y - this.height, 'event');
+                        position.set('y', y, 'event');
+                    },
+                    onDragStart: (element, x, y) => {
+                        $( this.selector ).addClass('active');
+                    },
+                    onDragEnd: (element, x, y) => {
+                        $( this.selector ).removeClass('active');
                     }
                 };
     
@@ -46,9 +56,9 @@ jQuery(document).ready($ => {
     
         set_src(src, animate) { // animate - bool
             if (animate) {
-                $( this.selector ).animate({opacity: 0}, 150);
-                setTimeout( () => $( this.selector ).attr('src', src), 150);
-                setTimeout( () => $( this.selector ).animate({opacity: 1}, 400), 200);
+                $( this.selector ).animate({opacity: 0}, 200);
+                setTimeout( () => $( this.selector ).attr('src', src), 250);
+                setTimeout( () => $( this.selector ).animate({opacity: 1}, 300), 300);
             } else {
                 $( this.selector ).attr('src', src)
             }
@@ -96,7 +106,7 @@ jQuery(document).ready($ => {
                     val = this.min['x'];
                 }
             } else if (coord == 'y') {
-                val = val;
+                val = type == 'resize' ? val : image.get_sizes().h - val - circle.height;
     
                 if (val > this.max['y']) {
                     val = this.max['y'];
@@ -114,29 +124,35 @@ jQuery(document).ready($ => {
             if (type == 'event' || type == 'resize') {
                 $( this.selector ).find(`.position__input[name=position_${coord}]`).val(this.coords[coord]);
             }
-    
-            console.log(this.coords);
         },
         events() {
-            // Input regex
-    
             // Input Value Changed
             $( this.selector ).on('input propertychange change', '.position__input', e => {
                 let target = $(e.target),
                     type = target.attr('name').split('_'), // array: [position, x], [position, y]
-                    val = type[1] == 'y' ? image.get_sizes().h - target.val() - circle.height : target.val();
+                    val = target.val();
     
                 this.set(type[1], val, 'input');
             });
     
             $( window ).resize(() => {
+                let max = this.max,
+                    coords = this.coords;
+    
                 setTimeout( () => {
                     this.set_max();
                     circle.resize();
     
-                    this.set('x', this.coords.x, 'resize');
-                    this.set('y', this.coords.y, 'resize');
-                }, 250);
+                    let cof_x = coords.x / (max.x / 100),
+                        cof_y = coords.y / (max.y / 100);
+                    
+                    let new_x = this.max.x / 100 * cof_x,
+                        new_y = this.max.y / 100 * cof_y;
+    
+                        console.log(new_x);
+                    this.set('x', new_x, 'resize');
+                    this.set('y', new_y, 'resize');
+                }, 25);
             });
         },
         set_max() {

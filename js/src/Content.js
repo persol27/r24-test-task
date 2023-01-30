@@ -25,7 +25,13 @@ const circle = {
                 },
                 onDrag: (element, x, y) => {
                     position.set('x', x, 'event');
-                    position.set('y', image.get_sizes().h - y - this.height, 'event');
+                    position.set('y', y, 'event');
+                },
+                onDragStart: (element, x, y) => {
+                    $( this.selector ).addClass('active');
+                },
+                onDragEnd: (element, x, y) => {
+                    $( this.selector ).removeClass('active');
                 }
             };
 
@@ -38,9 +44,9 @@ const circle = {
 
     set_src(src, animate) { // animate - bool
         if (animate) {
-            $( this.selector ).animate({opacity: 0}, 150);
-            setTimeout( () => $( this.selector ).attr('src', src), 150);
-            setTimeout( () => $( this.selector ).animate({opacity: 1}, 400), 200);
+            $( this.selector ).animate({opacity: 0}, 200);
+            setTimeout( () => $( this.selector ).attr('src', src), 250);
+            setTimeout( () => $( this.selector ).animate({opacity: 1}, 300), 300);
         } else {
             $( this.selector ).attr('src', src)
         }

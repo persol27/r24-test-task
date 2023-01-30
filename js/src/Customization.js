@@ -27,7 +27,7 @@ const position = {
                 val = this.min['x'];
             }
         } else if (coord == 'y') {
-            val = val;
+            val = type == 'resize' ? val : image.get_sizes().h - val - circle.height;
 
             if (val > this.max['y']) {
                 val = this.max['y'];
@@ -45,29 +45,35 @@ const position = {
         if (type == 'event' || type == 'resize') {
             $( this.selector ).find(`.position__input[name=position_${coord}]`).val(this.coords[coord]);
         }
-
-        console.log(this.coords);
     },
     events() {
-        // Input regex
-
         // Input Value Changed
         $( this.selector ).on('input propertychange change', '.position__input', e => {
             let target = $(e.target),
                 type = target.attr('name').split('_'), // array: [position, x], [position, y]
-                val = type[1] == 'y' ? image.get_sizes().h - target.val() - circle.height : target.val();
+                val = target.val();
 
             this.set(type[1], val, 'input');
         });
 
         $( window ).resize(() => {
+            let max = this.max,
+                coords = this.coords;
+
             setTimeout( () => {
                 this.set_max();
                 circle.resize();
 
-                this.set('x', this.coords.x, 'resize');
-                this.set('y', this.coords.y, 'resize');
-            }, 250);
+                let cof_x = coords.x / (max.x / 100),
+                    cof_y = coords.y / (max.y / 100);
+                
+                let new_x = this.max.x / 100 * cof_x,
+                    new_y = this.max.y / 100 * cof_y;
+
+                    console.log(new_x);
+                this.set('x', new_x, 'resize');
+                this.set('y', new_y, 'resize');
+            }, 25);
         });
     },
     set_max() {

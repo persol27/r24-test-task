@@ -95,7 +95,7 @@ body {
     outline: solid 0px rgba(255,255,255,.4);
     transition: background-color 0.125s linear, outline 0.2s linear 0.125s;
 
-    &:active {
+    &:active, &.active {
         background-color: rgba(255,255,255,.4);
         outline-width: 4px;
     }
@@ -117,6 +117,8 @@ body {
     &__image {
         z-index: 1;
         border: 1px solid transparent;
+        border-left: none;
+        padding-right: 1px;
     }
     &__circle {
         z-index: 2;
@@ -328,9 +330,9 @@ body {
 
             &--selected {display: none;}
             &--highlighted {
-                background-color: var(--color-white)!important;
+                background-color: #efefef!important;
                 color: var(--color-black)!important;
-                text-decoration: underline;
+                border-radius: 6px;
             }
         }
     }
