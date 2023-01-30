@@ -1,4 +1,4 @@
-export const position = {
+const position = {
     coords: {x: 0, y: 0},
     min: {x: 0, y: 0},
     max: {x: 0, y: 0},
@@ -78,7 +78,7 @@ materials = {
         {name: 'Material 4', src: 'images/material/4.jpg', thumb_src: 'images/material_thumb/4_32x32.jpg'},
         {name: 'Material 5', src: 'images/material/5.jpg', thumb_src: 'images/material_thumb/5_32x32.jpg'}
     ],
-    default_src: 'images/material/1.jpg', //this.options[0].src,
+    default_src: '',
     position: '',
     selector: '.material-select',
 
@@ -96,15 +96,15 @@ materials = {
         $( this.selector ).on('select2:open', e => {
             
         }).on('select2:select', e => {
-            console.log(e.params.data);
             $( image.selector ).animate({opacity: 0}, 250);
             setTimeout(() => image.set_src(e.params.data.id), 225)
             $( image.selector ).animate({opacity: 1}, 400);
         });
     },
     init() {
+        this.default_src = this.options[0].src;
         this.position = position.coords;
-        
+
         for (let $i = 0; $i < this.options.length; $i++) {
             let class_list = 'material-select__item material-option';
             $( this.selector )

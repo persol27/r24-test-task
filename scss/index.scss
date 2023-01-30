@@ -199,10 +199,20 @@ body {
         margin: 0 0 18px 10px;
     }
 
+    .select2-container {
+        max-width: 250px;
+        width: 250px!important;
+    }
+
     @media all and (max-width: $content_width) {
         margin: 40px 0 0;
 
         &__material-select, &__position {width: 100%;}
+
+        .select2-container {
+            max-width: 100%;
+            width: 100%!important;
+        }
     }
 }
 
@@ -217,10 +227,9 @@ body {
 
 // Select Element styles
 .select2-menu.select2-selection {
-    max-width: 250px;
-    width: 250px!important;
     background-color: var(--color-white);
     border: 1px solid transparent;
+    width: 100%;
     border-radius: 12px!important;
     padding: 13px 16px;
     transition: .275s;
@@ -230,11 +239,6 @@ body {
         outline: none;
         background: var(--color-white);
         border-color: var(--color-border);
-    }
-
-    @media all and (max-width: $content_width) {
-        max-width: 100%;
-        width: 100%!important;
     }
     
     .select2-selection {

@@ -1,4 +1,4 @@
-export const circle = {
+const circle = {
     width: 48, //px
     height: 48, //px
     position: '',
@@ -10,15 +10,16 @@ export const circle = {
         this.height = selector.offsetHeight;
     },
     init() {
-        this.set_sizes(); // init width&height
         this.position = position.coords;
+        this.set_sizes(); // init width&height
 
-        let container = document.querySelector( '.content__block' ),
+        setTimeout(() => {
+            let container = document.querySelector( '.content__block' ),
             container_rect = container.getBoundingClientRect(),
             element = document.querySelector( this.selector ),
             options = {
                 limit: {
-                    x: [0, container_rect.x - this.width],
+                    x: [0, container_rect.width - this.width],
                     y: [0, container_rect.height - this.height]
                 },
                 onDrag: (element, x, y) => {
@@ -26,8 +27,9 @@ export const circle = {
                     position.set('y', y);
                 }
             };
-
-        this.draggable = new Draggable (element, options);
+            
+            this.draggable = new Draggable (element, options);
+        }, 250)
     }
 }, image = {
     src: '',
@@ -45,8 +47,9 @@ export const circle = {
         return {w: width, h: height};
     },
     init() {
-        this.set_src(this.src);
         this.src = materials.default_src;
         this.position = position.coords;
+
+        this.set_src(this.src);
     }
 };
