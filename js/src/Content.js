@@ -40,8 +40,11 @@ const circle = {
     set_src(src, animate) { // animate - bool
         if (animate) {
             $( this.selector ).animate({opacity: 0}, 225);
-            setTimeout(() => $( this.selector ).attr('src', src), 275);
-            $( image.selector ).animate({opacity: 1}, 400);
+            setTimeout(() => {
+                
+                $( this.selector ).attr('src', src);
+                $( this.selector ).animate({opacity: 1}, 300);
+            }, 300);
         } else {
             $( this.selector ).attr('src', src)
         }
