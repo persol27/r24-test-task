@@ -48,11 +48,8 @@ jQuery(document).ready($ => {
         set_src(src, animate) { // animate - bool
             if (animate) {
                 $( this.selector ).animate({opacity: 0}, 225);
-                setTimeout(() => {
-                    
-                    $( this.selector ).attr('src', src);
-                    $( this.selector ).animate({opacity: 1}, 300);
-                }, 300);
+                setTimeout( () => $( this.selector ).attr('src', src), 250);
+                setTimeout( () => $( this.selector ).animate({opacity: 1}, 300), 325);
             } else {
                 $( this.selector ).attr('src', src)
             }

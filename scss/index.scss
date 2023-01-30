@@ -109,6 +109,7 @@ body {
     }
     &__image {
         z-index: 1;
+        border: 1px solid transparent;
     }
     &__circle {
         z-index: 2;
