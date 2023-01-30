@@ -29,7 +29,7 @@ body {
     align-items: stretch;
     justify-content: center;
 
-    @media all and (min-width: 768px) {
+    @media all and (min-width: 1024px) {
         overflow: hidden;
     }
 }
@@ -92,6 +92,13 @@ body {
     height: 48px;
     border: 6px solid var(--color-white);
     border-radius: 100%;
+    outline: solid 0px rgba(255,255,255,.4);
+    transition: background-color 0.125s linear, outline 0.2s linear 0.125s;
+
+    &:active {
+        background-color: rgba(255,255,255,.4);
+        outline-width: 4px;
+    }
 }
 
 .content {

@@ -46,9 +46,9 @@ jQuery(document).ready($ => {
     
         set_src(src, animate) { // animate - bool
             if (animate) {
-                $( this.selector ).animate({opacity: 0}, 250);
-                setTimeout( () => $( this.selector ).attr('src', src), 300);
-                setTimeout( () => $( this.selector ).animate({opacity: 1}, 250), 400);
+                $( this.selector ).animate({opacity: 0}, 150);
+                setTimeout( () => $( this.selector ).attr('src', src), 150);
+                setTimeout( () => $( this.selector ).animate({opacity: 1}, 400), 200);
             } else {
                 $( this.selector ).attr('src', src)
             }
@@ -185,8 +185,6 @@ jQuery(document).ready($ => {
                 $('.select2-menu-dropdown')
                     .css('opacity', 0)
                     .animate({opacity: 1}, 275);
-            }).on('select2:close', e => {
-                //$('.select2-menu-dropdown').animate({opacity: 0}, 175);
             }).on('select2:select', e => image.set_src(e.params.data.id, true));
         },
         init() {

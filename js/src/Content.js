@@ -38,9 +38,9 @@ const circle = {
 
     set_src(src, animate) { // animate - bool
         if (animate) {
-            $( this.selector ).animate({opacity: 0}, 250);
-            setTimeout( () => $( this.selector ).attr('src', src), 300);
-            setTimeout( () => $( this.selector ).animate({opacity: 1}, 250), 400);
+            $( this.selector ).animate({opacity: 0}, 150);
+            setTimeout( () => $( this.selector ).attr('src', src), 150);
+            setTimeout( () => $( this.selector ).animate({opacity: 1}, 400), 200);
         } else {
             $( this.selector ).attr('src', src)
         }
