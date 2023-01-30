@@ -26,7 +26,6 @@ export const circle = {
                     position.set('y', y);
                 }
             };
-            console.log(container_rect);
 
         this.draggable = new Draggable (element, options);
     }
