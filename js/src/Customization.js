@@ -17,31 +17,37 @@ const position = {
             $( this.selector ).find(`.position__input[name=position_${item.coord}]`).val('');
         }
     },
-    set(coord, value) {
+    set(coord, value, type) {
         let val = value;
 
         if (coord == 'x') {
+            val = val;
+
             if (val > this.max['x']) {
                 val = this.max['x'];
             } else if (val < this.min['x']) {
                 val = this.min['x'];
             }
-            
-            val = Math.round(val);
-            //$( circle.selector ).css('left', result);
         } else if (coord == 'y') {
-            if (val > this.max['y']) {
-                val = this.max['y'];
-            } else if (val < this.min['y']) {
-                val = this.min['y'];
-            }
+            val = Math.round(image.get_sizes().h - val - circle.height);
 
-            val = Math.ceil(image.get_sizes().h - val - circle.height);
-            //$( circle.selector ).css('top', result);
+            if (val > this.max['y']) {
+                val = image.get_sizes().h + this.max['y'] + circle.height;
+            } else if (val < this.min['y']) {
+                val = image.get_sizes().h + this.min['y'] + circle.height;
+            }
         }
 
-        this.coords[coord] = val;
-        $( this.selector ).find(`.position__input[name=position_${coord}]`).val(this.coords[coord]); // upd inputs
+        this.coords[coord] = Math.round(val);
+
+        if (type !== 'event') {
+            console.log(this.coords);
+            circle.draggable.set(this.coords.x, this.coords.y); // upd inputs
+        }
+
+        if (type == 'event' || type == 'resize') {
+            $( this.selector ).find(`.position__input[name=position_${coord}]`).val(this.coords[coord]);
+        }
     },
     events() {
         // Input regex
@@ -52,7 +58,7 @@ const position = {
                 type = target.attr('name').split('_'), // array: [position, x], [position, y]
                 val = target.val();
 
-            this.set(type[1], val);
+            this.set(type[1], val, 'input');
         });
 
         $( window ).resize(() => {
@@ -63,8 +69,8 @@ const position = {
                 let x = $( this.selector ).find('.position__input[name=position_x]'),
                     y = $( this.selector ).find('.position__input[name=position_y]');
 
-                this.set('x', x.val());
-                this.set('y', y.val());
+                this.set('x', x.val(), 'resize');
+                this.set('y', y.val(), 'resize');
             }, 75);
         });
     },

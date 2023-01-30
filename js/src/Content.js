@@ -24,8 +24,8 @@ const circle = {
                     y: [0, image.get_sizes().h - this.height]
                 },
                 onDrag: (element, x, y) => {
-                    position.set('x', x);
-                    position.set('y', y);
+                    position.set('x', x, 'event');
+                    position.set('y', y, 'event');
                 }
             };
 
