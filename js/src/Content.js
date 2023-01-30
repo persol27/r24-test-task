@@ -25,12 +25,11 @@ const circle = {
                 },
                 onDrag: (element, x, y) => {
                     position.set('x', x, 'event');
-                    position.set('y', y, 'event');
+                    position.set('y', image.get_sizes().h - y - this.height, 'event');
                 }
             };
 
         this.draggable = new Draggable (element, options);
-        console.log(this.draggable);
     }
 }, image = {
     src: '',
@@ -39,9 +38,9 @@ const circle = {
 
     set_src(src, animate) { // animate - bool
         if (animate) {
-            $( this.selector ).animate({opacity: 0}, 225);
-            setTimeout( () => $( this.selector ).attr('src', src), 250);
-            setTimeout( () => $( this.selector ).animate({opacity: 1}, 300), 325);
+            $( this.selector ).animate({opacity: 0}, 250);
+            setTimeout( () => $( this.selector ).attr('src', src), 300);
+            setTimeout( () => $( this.selector ).animate({opacity: 1}, 250), 400);
         } else {
             $( this.selector ).attr('src', src)
         }

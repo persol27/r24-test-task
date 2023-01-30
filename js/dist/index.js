@@ -33,12 +33,11 @@ jQuery(document).ready($ => {
                     },
                     onDrag: (element, x, y) => {
                         position.set('x', x, 'event');
-                        position.set('y', y, 'event');
+                        position.set('y', image.get_sizes().h - y - this.height, 'event');
                     }
                 };
     
             this.draggable = new Draggable (element, options);
-            console.log(this.draggable);
         }
     }, image = {
         src: '',
@@ -47,9 +46,9 @@ jQuery(document).ready($ => {
     
         set_src(src, animate) { // animate - bool
             if (animate) {
-                $( this.selector ).animate({opacity: 0}, 225);
-                setTimeout( () => $( this.selector ).attr('src', src), 250);
-                setTimeout( () => $( this.selector ).animate({opacity: 1}, 300), 325);
+                $( this.selector ).animate({opacity: 0}, 250);
+                setTimeout( () => $( this.selector ).attr('src', src), 300);
+                setTimeout( () => $( this.selector ).animate({opacity: 1}, 250), 400);
             } else {
                 $( this.selector ).attr('src', src)
             }
@@ -88,36 +87,35 @@ jQuery(document).ready($ => {
             }
         },
         set(coord, value, type) {
-            let val = value;
+            let val = Number(value);
     
             if (coord == 'x') {
-                val = val;
-    
                 if (val > this.max['x']) {
                     val = this.max['x'];
                 } else if (val < this.min['x']) {
                     val = this.min['x'];
                 }
             } else if (coord == 'y') {
-                val = Math.round(image.get_sizes().h - val - circle.height);
+                val = val;
     
                 if (val > this.max['y']) {
-                    val = image.get_sizes().h + this.max['y'] + circle.height;
+                    val = this.max['y'];
                 } else if (val < this.min['y']) {
-                    val = image.get_sizes().h + this.min['y'] + circle.height;
+                    val = this.min['y'];
                 }
             }
     
             this.coords[coord] = Math.round(val);
     
             if (type !== 'event') {
-                console.log(this.coords);
                 circle.draggable.set(this.coords.x, this.coords.y); // upd inputs
             }
     
             if (type == 'event' || type == 'resize') {
                 $( this.selector ).find(`.position__input[name=position_${coord}]`).val(this.coords[coord]);
             }
+    
+            console.log(this.coords);
         },
         events() {
             // Input regex
@@ -126,22 +124,19 @@ jQuery(document).ready($ => {
             $( this.selector ).on('input propertychange change', '.position__input', e => {
                 let target = $(e.target),
                     type = target.attr('name').split('_'), // array: [position, x], [position, y]
-                    val = target.val();
+                    val = type[1] == 'y' ? image.get_sizes().h - target.val() - circle.height : target.val();
     
                 this.set(type[1], val, 'input');
             });
     
             $( window ).resize(() => {
-                circle.resize();
-                this.set_max();
+                setTimeout( () => {
+                    this.set_max();
+                    circle.resize();
     
-                setTimeout(() => {
-                    let x = $( this.selector ).find('.position__input[name=position_x]'),
-                        y = $( this.selector ).find('.position__input[name=position_y]');
-    
-                    this.set('x', x.val(), 'resize');
-                    this.set('y', y.val(), 'resize');
-                }, 75);
+                    this.set('x', this.coords.x, 'resize');
+                    this.set('y', this.coords.y, 'resize');
+                }, 250);
             });
         },
         set_max() {
@@ -187,7 +182,11 @@ jQuery(document).ready($ => {
         },
         eventsSelect() {
             $( this.selector ).on('select2:open', e => {
-                
+                $('.select2-menu-dropdown')
+                    .css('opacity', 0)
+                    .animate({opacity: 1}, 275);
+            }).on('select2:close', e => {
+                //$('.select2-menu-dropdown').animate({opacity: 0}, 175);
             }).on('select2:select', e => image.set_src(e.params.data.id, true));
         },
         init() {
