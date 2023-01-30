@@ -92,12 +92,12 @@ body {
     height: 48px;
     border: 6px solid var(--color-white);
     border-radius: 100%;
-    outline: solid 0px rgba(255,255,255,.4);
-    transition: background-color 0.125s linear, outline 0.2s linear 0.125s;
+    transition: background-color 0.125s linear, box-shadow 0.2s linear 0.125s;
+    outline: none;
 
     &:active, &.active {
         background-color: rgba(255,255,255,.4);
-        outline-width: 4px;
+        box-shadow: 0 0 0 4px rgba(255,255,255,.4);
     }
 }
 
