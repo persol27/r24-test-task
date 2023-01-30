@@ -27,7 +27,7 @@ const position = {
                 val = this.min['x'];
             }
             
-            let result = Math.round(val);
+            val = Math.round(val);
             //$( circle.selector ).css('left', result);
         } else if (coord == 'y') {
             if (val > this.max['y']) {
@@ -36,11 +36,9 @@ const position = {
                 val = this.min['y'];
             }
 
-            let result = Math.ceil(image.get_sizes().h - val - circle.height);
+            val = Math.ceil(image.get_sizes().h - val - circle.height);
             //$( circle.selector ).css('top', result);
         }
-
-        val = Math.ceil(val);
 
         this.coords[coord] = val;
         $( this.selector ).find(`.position__input[name=position_${coord}]`).val(this.coords[coord]); // upd inputs
