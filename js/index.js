@@ -11,7 +11,7 @@ window.addEventListener('load', () => {
 jQuery(document).ready($ => {
 
     // Script Init
-    let objects_arr = [image, position, circle, materials];
+    let objects_arr = [position, materials, image, circle];
     const init = objects => objects.forEach(el => el.init());
 
     init(objects_arr);
