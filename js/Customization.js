@@ -79,7 +79,7 @@ materials = {
         {name: 'Material 5', src: 'images/material/5.jpg', thumb_src: 'images/material_thumb/5_32x32.jpg'}
     ],
     default_src: 'images/material/1.jpg', //this.options[0].src,
-    position: position.coords,
+    position: '',
     selector: '.material-select',
 
     templateSelect(state) {
@@ -103,6 +103,8 @@ materials = {
         });
     },
     init() {
+        this.position = position.coords;
+        
         for (let $i = 0; $i < this.options.length; $i++) {
             let class_list = 'material-select__item material-option';
             $( this.selector )

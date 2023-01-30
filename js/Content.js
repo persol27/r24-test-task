@@ -1,7 +1,7 @@
 export const circle = {
     width: 48, //px
     height: 48, //px
-    position: position.coords,
+    position: '',
     selector: '.circle_target',
     
     set_sizes() {
@@ -11,6 +11,7 @@ export const circle = {
     },
     init() {
         this.set_sizes(); // init width&height
+        this.position = position.coords;
 
         let container = document.querySelector( '.content__block' ),
             container_rect = container.getBoundingClientRect(),
@@ -30,8 +31,8 @@ export const circle = {
         this.draggable = new Draggable (element, options);
     }
 }, image = {
-    src: materials.default_src,
-    position: position.coords,
+    src: '',
+    position: '',
     selector: '.slide-image',
 
     set_src(src) {
@@ -46,5 +47,7 @@ export const circle = {
     },
     init() {
         this.set_src(this.src);
+        this.src = materials.default_src;
+        this.position = position.coords;
     }
 };
