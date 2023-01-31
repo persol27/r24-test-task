@@ -59,8 +59,7 @@ const position = {
 
                 let cof_x = Math.round(coords.x / (max.x / 100)),
                     cof_y = Math.round(coords.y / (max.y / 100));
-
-                    console.log(this.max.y)
+                    
                 let new_x = Math.round(this.max.x / 100 * cof_x),
                     new_y = Math.round(this.max.y / 100 * cof_y);
 
