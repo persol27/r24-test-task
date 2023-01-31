@@ -83,20 +83,7 @@ jQuery(document).ready($ => {
         min: {x: 0, y: 0},
         max: {x: 0, y: 0},
         selector: '.position_target',
-        
-        coords_reset() {
-            const arr = [
-                {coord: 'x', value: 0, css_attr: 'left'},
-                {coord: 'y', value: 0, css_attr: 'top'}
-            ];
     
-            for (let $i = 0; $i < arr.length; $i++) {
-                let item = arr[$i];
-                this.coords[item.coord] = item.value;
-                $( circle.selector ).css(item.css_attr, 'unset');
-                $( this.selector ).find(`.position__input[name=position_${item.coord}]`).val('');
-            }
-        },
         set(coord, value, type) {
             let val = Number(value);
     
@@ -106,13 +93,19 @@ jQuery(document).ready($ => {
                 } else if (val < this.min['x']) {
                     val = this.min['x'];
                 }
+    
+                if (type == 'input') {
+                    $( this.selector ).find(`.position__input[name=position_${coord}]`).val(Math.round(val));
+                }
             } else if (coord == 'y') {
-                val = type == 'resize' ? val : image.get_sizes().h - val - circle.height;
+                val = type !== 'resize' ? image.get_sizes().h - val - circle.height : val;
     
                 if (val > this.max['y']) {
                     val = this.max['y'];
+                    $( this.selector ).find(`.position__input[name=position_${coord}]`).val(this.min['y']);
                 } else if (val < this.min['y']) {
                     val = this.min['y'];
+                    $( this.selector ).find(`.position__input[name=position_${coord}]`).val(this.max['y']);
                 }
             }
     
@@ -121,14 +114,14 @@ jQuery(document).ready($ => {
             if (type !== 'event') {
                 circle.draggable.set(this.coords.x, this.coords.y); // upd inputs
             }
-    
-            if (type == 'event' || type == 'resize') {
+            if (type !== 'input') {
                 $( this.selector ).find(`.position__input[name=position_${coord}]`).val(this.coords[coord]);
             }
+            
         },
         events() {
             // Input Value Changed
-            $( this.selector ).on('input propertychange change', '.position__input', e => {
+            $( this.selector ).on('input propertychange', '.position__input', e => {
                 let target = $(e.target),
                     type = target.attr('name').split('_'), // array: [position, x], [position, y]
                     val = target.val();
@@ -144,15 +137,16 @@ jQuery(document).ready($ => {
                     this.set_max();
                     circle.resize();
     
-                    let cof_x = coords.x / (max.x / 100),
-                        cof_y = coords.y / (max.y / 100);
-                    
-                    let new_x = this.max.x / 100 * cof_x,
-                        new_y = this.max.y / 100 * cof_y;
+                    let cof_x = Math.round(coords.x / (max.x / 100)),
+                        cof_y = Math.round(coords.y / (max.y / 100));
     
-                        console.log(new_x);
-                    this.set('x', new_x, 'resize');
-                    this.set('y', new_y, 'resize');
+                        console.log(this.max.y)
+                    let new_x = Math.round(this.max.x / 100 * cof_x),
+                        new_y = Math.round(this.max.y / 100 * cof_y);
+    
+                    circle.draggable.set(new_x, image.get_sizes().h - new_y - circle.height);
+                    $( this.selector ).find(`.position__input[name=position_x]`).val(new_x);
+                    $( this.selector ).find(`.position__input[name=position_y]`).val(new_y);
                 }, 25);
             });
         },
@@ -214,42 +208,16 @@ jQuery(document).ready($ => {
                     .append(`<option class="${class_list}" value="${this.options[$i].src}" data-thumb="${this.options[$i].thumb_src}">${this.options[$i].name}</option>`);
             }
     
-            const templateSelect = this.templateSelect
-    
             $( this.selector ).select2({
                 selectionCssClass: 'select2-menu',
                 dropdownCssClass: 'select2-menu-dropdown',
                 width: 250,
                 minimumResultsForSearch: Infinity,
-                templateResult: templateSelect,
-                templateSelection: templateSelect
+                templateResult: this.templateSelect,
+                templateSelection: this.templateSelect
             });
     
             this.eventsSelect(); // Select2 events init
-    
-            /*$( this.selector ).iconselectmenu({
-                position: { my : "center bottom", at: "center top" },
-                create: (event, data) => {
-                    $( '.ui-selectmenu-menu' ).css('opacity', 0);
-                },
-                change: (event, data) => {
-                    console.log(data);
-                    $( image.selector ).hide( 'fade', {}, 200 );
-                    setTimeout(() => image.set_src(data.item.value), 250)
-                    $( image.selector ).show( 'fade', {}, 400 );
-                },
-                close: (event, data) => {
-                    $('.ui-selectmenu-menu')
-                        .addClass('ui-selectmenu-open')
-                        .css('pointer-events', 'none')
-                        .animate({opacity: 0}, 275);
-                    setTimeout(() => $('.ui-selectmenu-menu').removeClass('ui-selectmenu-open').css('pointer-events', 'all'), 225);
-                },
-                open: (event, data) => {
-                    $('.ui-selectmenu-menu').animate({opacity: 1}, 375);
-                }
-            }).iconselectmenu( "menuWidget").addClass( "ui-menu-icons avatar" );*/
-    
         }
     };
 
